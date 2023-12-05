@@ -10,12 +10,36 @@ public class Evento {
 	private int capacidade;
 	private double preco;
 	private ArrayList<Ingresso> ingressos;
+	
+	public Evento() {};
+	
+	public Evento(int id, String data, String descricao) {
+		this.id = id;
+		this.data = data;
+		this.descricao = descricao;	
+	}
+	
+	public Evento(int id, String data, String descricao, int capacidade) {
+		this.id = id;
+		this.data = data;
+		this.descricao = descricao;	
+		this.capacidade = capacidade;
+	}
+	
+	public Evento(int id, String data, String descricao, double preco) {
+		this.id = id;
+		this.data = data;
+		this.descricao = descricao;	
+		this.preco = preco;
+	}
 
-	public Evento(String data, String descricao, int capacidade, double preco) {
+	public Evento(int id, String data, String descricao, int capacidade, double preco) {
+		this.id = id;
 		this.data = data;
 		this.descricao = descricao;
 		this.capacidade = capacidade;
 		this.preco = preco;
+		
 	}
 
 	public boolean lotado() {

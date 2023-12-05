@@ -1,5 +1,6 @@
 package modelo;
 
+
 public class Ingresso {
 
 	private String codigo;
@@ -7,14 +8,57 @@ public class Ingresso {
 	private Evento evento;
 	private Participante participante;
 
-	public Ingresso(Evento evento, Participante participante, String telefone) {
+	public Ingresso(String codigo, Evento evento, Participante participante, String telefone) {
+		this.codigo = codigo;
 		this.telefone = telefone;
 		this.evento = evento;
 		this.participante = participante;
 	}
 
-
 	public double calcularPreco() {
-		return 1;
+	
+		if (participante.calcularIdade() < 18) {
+			return evento.getPreco() * 0.9;
+		} else if (participante.calcularIdade() >= 60) {
+			return evento.getPreco() * 0.8;
+		} else {
+			return evento.getPreco();
+		}
 	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+		evento.getIngressos().add(this);
+	}
+
+	public Participante getParticipante() {
+		return participante;
+	}
+
+	public void setParticipante(Participante participante) {
+		this.participante = participante;
+		participante.getIngressos().add(this);
+	}
+	
+	
 }
