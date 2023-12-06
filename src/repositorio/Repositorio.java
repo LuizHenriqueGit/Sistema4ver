@@ -98,7 +98,39 @@ public class Repositorio {
 		
 	}
 
+	public ArrayList<Participante> getParticipantes() {
+		return participantes;
+	}
+
+	public void setParticipantes(ArrayList<Participante> participantes) {
+		this.participantes = participantes;
+	}
+
+	public ArrayList<Evento> getEventos() {
+		return eventos;
+	}
+
+	public void setEventos(ArrayList<Evento> eventos) {
+		this.eventos = eventos;
+	}
+
 	public ArrayList<Ingresso> getIngressos() {
 		return ingressos;
+	}
+
+	public void setIngressos(ArrayList<Ingresso> ingressos) {
+		this.ingressos = ingressos;
+	}
+
+	public void remove(Ingresso ingresso) {
+		ingressos.remove(ingresso);
+	}
+	
+	public void remove(Evento evento) {
+		eventos.remove(evento);
+	}
+	
+	public void remove(Participante participante) {
+		participantes.remove(participante);
 	}
 }

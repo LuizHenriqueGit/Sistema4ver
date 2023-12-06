@@ -9,7 +9,7 @@ public class Participante {
 
 	private String cpf;
 	private String nascimento;
-	private ArrayList<Ingresso> ingressos;
+	private ArrayList<Ingresso> ingressos = new ArrayList<>();
 	private static DateTimeFormatter formdata = DateTimeFormatter.ofPattern("dd/mm/yyyy");
 
 	public Participante(String cpf, String nascimento) {
@@ -22,6 +22,16 @@ public class Participante {
 		Period idade = Period.between(date, LocalDate.now());
 		
 		return idade.getYears();
+	}
+	
+	public void adicionarIngresso(Ingresso ingresso) {
+		ingressos.add(ingresso);
+		ingresso.setParticipante(this);
+	}
+	
+	public void removerIngresso(Ingresso ingresso) {
+		ingressos.remove(ingresso);
+		ingresso.setParticipante(null);
 	}
 	
 	// Getters e Setters

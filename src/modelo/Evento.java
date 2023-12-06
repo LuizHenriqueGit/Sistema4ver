@@ -9,7 +9,7 @@ public class Evento {
 	private String descricao;
 	private int capacidade;
 	private double preco;
-	private ArrayList<Ingresso> ingressos;
+	private ArrayList<Ingresso> ingressos = new ArrayList<>();
 	
 	public Evento() {};
 	
@@ -61,6 +61,15 @@ public class Evento {
 		return ingressos.size() * preco;
 	}
 
+	public void adicionarIngresso(Ingresso ingresso) {
+		ingressos.add(ingresso);
+		ingresso.setEvento(this);
+	}
+	
+	public void removerIngresso(Ingresso ingresso) {
+		ingressos.remove(ingresso);
+		ingresso.setEvento(null);
+	}
 	
 	// Getters e Setters
 	

@@ -25,7 +25,7 @@ public class Ingresso {
 			return evento.getPreco();
 		}
 	}
-
+	
 	public String getCodigo() {
 		return codigo;
 	}
@@ -48,7 +48,9 @@ public class Ingresso {
 
 	public void setEvento(Evento evento) {
 		this.evento = evento;
-		evento.getIngressos().add(this);
+		if (evento != null) {
+			evento.adicionarIngresso(this);
+		}
 	}
 
 	public Participante getParticipante() {
@@ -57,8 +59,7 @@ public class Ingresso {
 
 	public void setParticipante(Participante participante) {
 		this.participante = participante;
-		participante.getIngressos().add(this);
+		participante.adicionarIngresso(this);
 	}
-	
 	
 }
