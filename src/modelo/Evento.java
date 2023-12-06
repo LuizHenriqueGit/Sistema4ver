@@ -61,15 +61,17 @@ public class Evento {
 		return ingressos.size() * preco;
 	}
 
+	
 	public void adicionarIngresso(Ingresso ingresso) {
 		ingressos.add(ingresso);
-		ingresso.setEvento(this);
 	}
+	
 	
 	public void removerIngresso(Ingresso ingresso) {
 		ingressos.remove(ingresso);
 		ingresso.setEvento(null);
 	}
+	
 	
 	// Getters e Setters
 	
@@ -120,5 +122,13 @@ public class Evento {
 	public void setIngressos(ArrayList<Ingresso> ingressos) {
 		this.ingressos = ingressos;
 	}
+
+	@Override
+	public String toString() {
+		return "Evento [id=" + id + ", data=" + data + ", descricao=" + descricao + ", capacidade=" + capacidade
+				+ ", preco=" + preco + ", ingressos=" + ingressos + "]";
+	}
+	
+	
 
 }

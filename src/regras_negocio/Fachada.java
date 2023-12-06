@@ -19,34 +19,34 @@ public class Fachada {
 	
 	
 	// CRIAR EVENTO
-	public static void criarEvento (String data, String descrição, String capacidade, String preco) throws Exception{
+	public static void criarEvento (String data, String descrição, int capacidade, double preco) throws Exception{
 
 		
-		if (data.length() == 0 || capacidade.length() == 0) {
+		if (data.length() == 0 || capacidade == 0) {
 			throw new Exception("Data e capacidade são obrigatorios.");
 		}
 		
-		if (Integer.parseInt(preco) < 0) {
+		if (preco < 0) {
 			throw new Exception("Preço não pode ser menor que 0.");
 		}
 		
-		if (Integer.parseInt(capacidade) < 2) {
+		if (capacidade < 2) {
 			throw new Exception("Capacidade nao pode ser menor que 2.");
 		}
 		
 		int id = getID();
 		
-		if (capacidade.length() == 0 && preco.length() == 0) {
+		if (capacidade == 0 && preco == 0) {
 			Evento evento = new Evento(id, data, descrição);
 			repositorio.adicionar(evento);
-		} else if (capacidade.length() > 0 && preco.length() == 0) {
-			Evento evento = new Evento(id, data, descrição, Integer.parseInt(capacidade));
+		} else if (capacidade > 0 && preco == 0) {
+			Evento evento = new Evento(id, data, descrição, capacidade);
 			repositorio.adicionar(evento);
-		} else if (capacidade.length() == 0 && preco.length() > 0) {
-			Evento evento = new Evento(id, data, descrição, Double.parseDouble(preco));
+		} else if (capacidade == 0 && preco > 0) {
+			Evento evento = new Evento(id, data, descrição, preco);
 			repositorio.adicionar(evento);
 		} else {
-			Evento evento = new Evento(id, data, descrição, Integer.parseInt(capacidade), Double.parseDouble(preco));
+			Evento evento = new Evento(id, data, descrição, capacidade, preco);
 			repositorio.adicionar(evento);
 		}
 		
@@ -61,16 +61,6 @@ public class Fachada {
 			throw new Exception("Nenhum campo pode estar vazio.");
 		}
 		
-		if (cpf.length() != 11) {
-			throw new Exception("CPF invalido.");
-		}
-		
-		try {
-			LocalDate.parse(nascimento, formdata);
-		} catch (DateTimeParseException e) {
-			throw new Exception("Formato de data invalido.");
-		}
-		
 		Participante participante = new Participante(cpf, nascimento);
 		repositorio.adicionar(participante);
 		
@@ -83,17 +73,7 @@ public class Fachada {
 		if (cpf.length() == 0 || nascimento.length() == 0 || empresa.length() == 0) {
 			throw new Exception("Nenhum campo pode estar vazio.");
 		}
-		
-		if (cpf.length() != 11) {
-			throw new Exception("CPF invalido.");
-		}
-		
-		try {
-			LocalDate.parse(nascimento, formdata);
-		} catch (DateTimeParseException e) {
-			throw new Exception("Formato de data invalido.");
-		}
-		
+	
 		if (empresa.length() <= 0) {
 			throw new Exception("Nome da empresa e obrigatorio.");
 		}
@@ -106,30 +86,14 @@ public class Fachada {
 	public static void criarIngresso(int id, String cpf, String telefone) throws Exception{
 		
 		String codigo = id + "-" +  cpf;
-		ArrayList<Evento> eventos = repositorio.getEventos();
-		ArrayList<Participante> participantes = repositorio.getParticipantes();
-		Evento evento = null;
-		Participante participante = null;
-		
-		for (Evento e : eventos) {
-			if (e.getId() == id) {
-				evento = e;
-			}
-		}
-		
-		for (Participante p : participantes) {
-			if (p.getCpf() == cpf) {
-				participante = p;
-			}
-		}
-		
-		if (participante == null || evento == null) {
-			throw new Exception("Evento ou participante inválido.");
-		}
+		Evento evento = repositorio.localizarEvento(id);
+		Participante participante = repositorio.localizarParticipante(cpf);
 		
 		Ingresso ingresso = new Ingresso(codigo, evento, participante, telefone);
-		evento.adicionarIngresso(ingresso);
 		repositorio.adicionar(ingresso);
+		evento.adicionarIngresso(ingresso);
+		participante.adicionarIngresso(ingresso);
+		
 	}
 	
 	// APAGAR EVENTO
@@ -157,6 +121,7 @@ public class Fachada {
 	}
 	
 	// APAGAR PARTICIPANTE
+	
 	public void apagarParticipante(String cpf) throws Exception {
 		
 		ArrayList<Participante> participantes = repositorio.getParticipantes();
@@ -223,7 +188,7 @@ public class Fachada {
 		return repositorio.getParticipantes();
 	}
 	
-	public static ArrayList<Ingresso> listarIngresssos() {
+	public static ArrayList<Ingresso> listarIngressos() {
 		return repositorio.getIngressos();
 	}
 	
@@ -236,5 +201,6 @@ public class Fachada {
 	public static int getID() {
 		return idint;
 	}
+	
 }
 	

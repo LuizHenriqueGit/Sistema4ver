@@ -45,21 +45,27 @@ public class Ingresso {
 	public Evento getEvento() {
 		return evento;
 	}
-
-	public void setEvento(Evento evento) {
-		this.evento = evento;
-		if (evento != null) {
-			evento.adicionarIngresso(this);
-		}
-	}
-
+	
 	public Participante getParticipante() {
 		return participante;
 	}
 
+	
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+
 	public void setParticipante(Participante participante) {
 		this.participante = participante;
-		participante.adicionarIngresso(this);
 	}
+	
+	
+	@Override
+	public String toString() {
+		return "Ingresso [codigo=" + codigo + ", telefone=" + telefone + ", evento=" + evento + ", participante="
+				+ participante + "]";
+	}
+	
+	
 	
 }

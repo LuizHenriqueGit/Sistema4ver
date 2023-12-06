@@ -19,16 +19,61 @@ public class Repositorio {
 		carregarObjetos();
 	}
 	
+	// PARTICIPANTE
+	
 	public void adicionar(Participante participante) {
 		participantes.add(participante);
 	}
 	
+	public void remover(Participante participante) {
+		participantes.remove(participante);
+	}
+	
+	public Participante localizarParticipante(String cpf) {
+		for (Participante p : participantes) {
+			if (p.getCpf().equals(cpf)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	// EVENTO
+	
 	public void adicionar(Evento evento) {
 		eventos.add(evento);
 	}
+	
+	public void remover(Evento evento) {
+		eventos.remove(evento);
+	}
+	
+	public Evento localizarEvento(int id) {
+		for (Evento e : eventos) {
+			if (e.getId() == id) {
+				return e;
+			}
+		}
+		return null;
+	}
 
+	// INGRESSO
+	
 	public void adicionar(Ingresso ingresso) {
 		ingressos.add(ingresso);
+	}
+	
+	public void remover(Ingresso ingresso) {
+		ingressos.remove(ingresso);
+	}
+	
+	public Ingresso localizarIngresso(String codigo) {
+		for (Ingresso i : ingressos) {
+			if (i.getCodigo().equals(codigo)) {
+				return i;
+			}
+		}
+		return null;
 	}
 	
 	public void carregarObjetos()  	{

@@ -10,7 +10,7 @@ public class Participante {
 	private String cpf;
 	private String nascimento;
 	private ArrayList<Ingresso> ingressos = new ArrayList<>();
-	private static DateTimeFormatter formdata = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+	private static DateTimeFormatter formdata = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public Participante(String cpf, String nascimento) {
 		this.cpf = cpf;
@@ -23,6 +23,7 @@ public class Participante {
 		
 		return idade.getYears();
 	}
+	
 	
 	public void adicionarIngresso(Ingresso ingresso) {
 		ingressos.add(ingresso);
@@ -59,5 +60,12 @@ public class Participante {
 	public void setIngressos(ArrayList<Ingresso> ingressos) {
 		this.ingressos = ingressos;
 	}
+
+	@Override
+	public String toString() {
+		return "Participante [cpf=" + cpf + ", nascimento=" + nascimento + ", ingressos=" + ingressos + "]";
+	}
+	
+	
 
 }
