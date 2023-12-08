@@ -2,7 +2,6 @@ package regras_negocio;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import modelo.Convidado;
@@ -14,9 +13,8 @@ import repositorio.Repositorio;
 public class Fachada {
 	
 	public static Repositorio repositorio = new Repositorio();
-	private static int idint = 1;
-	private static DateTimeFormatter formdata = DateTimeFormatter.ofPattern("dd/mm/yyyy");
 	
+	private static DateTimeFormatter formdata = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 	// CRIAR EVENTO
 	public static void criarEvento (String data, String descrição, int capacidade, double preco) throws Exception{
@@ -34,24 +32,12 @@ public class Fachada {
 			throw new Exception("Capacidade nao pode ser menor que 2.");
 		}
 		
-		int id = getID();
-		
-		if (capacidade == 0 && preco == 0) {
-			Evento evento = new Evento(id, data, descrição);
-			repositorio.adicionar(evento);
-		} else if (capacidade > 0 && preco == 0) {
-			Evento evento = new Evento(id, data, descrição, capacidade);
-			repositorio.adicionar(evento);
-		} else if (capacidade == 0 && preco > 0) {
-			Evento evento = new Evento(id, data, descrição, preco);
-			repositorio.adicionar(evento);
-		} else {
-			Evento evento = new Evento(id, data, descrição, capacidade, preco);
-			repositorio.adicionar(evento);
-		}
-		
-		incrementoID();
-		
+		int id = repositorio.gerarId();
+
+		Evento evento = new Evento(id, data, descrição, capacidade, preco);
+		repositorio.adicionar(evento);
+	
+		repositorio.salvarObjetos();	
 	}
 	
 	// CRIAR PARTICIPANTE
@@ -63,6 +49,7 @@ public class Fachada {
 		
 		Participante participante = new Participante(cpf, nascimento);
 		repositorio.adicionar(participante);
+		repositorio.salvarObjetos();
 		
 	}
 
@@ -78,8 +65,9 @@ public class Fachada {
 			throw new Exception("Nome da empresa e obrigatorio.");
 		}
 		
-		Convidado convidado = new Convidado(cpf, nascimento, empresa);
+		Participante convidado = new Convidado(cpf, nascimento, empresa);
 		repositorio.adicionar(convidado);
+		repositorio.salvarObjetos();
 	}
 	
 	//CRIAR INGRESSO
@@ -89,49 +77,48 @@ public class Fachada {
 		Evento evento = repositorio.localizarEvento(id);
 		Participante participante = repositorio.localizarParticipante(cpf);
 		
+		if (participante == null) {
+			throw new Exception("CPF invalido.");
+		}
+
+		for (Ingresso i : repositorio.getIngressos()) {
+			if (i.getCodigo() == codigo) {
+				throw new Exception("Ingresso já criado pra o CPF digitado.");
+			}
+		}
+		
+		if (evento.getIngressos().size() == evento.getCapacidade()) {
+			throw new Exception("Evento cheio! Capacidade esgotada.");
+		}
+		
 		Ingresso ingresso = new Ingresso(codigo, evento, participante, telefone);
 		repositorio.adicionar(ingresso);
 		evento.adicionarIngresso(ingresso);
 		participante.adicionarIngresso(ingresso);
-		
+		repositorio.salvarObjetos();
 	}
 	
 	// APAGAR EVENTO
-	public void apagarEvento(int id) throws Exception {
-		
-		ArrayList<Evento> eventos = repositorio.getEventos();
-		Evento evento = null;
-		
-		for (Evento e : eventos) {
-			if (e.getId() == id) {
-				evento = e;
-			}
-		}
+	public static void apagarEvento(int id) throws Exception {
+	
+		Evento evento = repositorio.localizarEvento(id);
 		
 		if (evento == null) {
 			throw new Exception("ID de evento invalido.");
 		}
 		
-		if (evento.getId() == id && evento.getIngressos().size() == 0) {
-			repositorio.remove(evento);
+		if (evento.getIngressos().size() == 0) {
+			repositorio.remover(evento);
 		} else {
 			throw new Exception("O evento nao pode conter ingressos.");
 		}
-		
+		repositorio.salvarObjetos();
 	}
 	
 	// APAGAR PARTICIPANTE
-	
-	public void apagarParticipante(String cpf) throws Exception {
+	public static void apagarParticipante(String cpf) throws Exception {
 		
-		ArrayList<Participante> participantes = repositorio.getParticipantes();
-		Participante participante = null;
-		
-		for (Participante p : participantes) {
-			if (p.getCpf() == cpf) {
-				participante = p;
-			}
-		}
+		Participante participante = repositorio.localizarParticipante(cpf);
 		
 		if (participante == null) {
 			throw new Exception("CPF invalido.");
@@ -139,45 +126,28 @@ public class Fachada {
 		
 		if (participante.getIngressos().size() > 0) {
 			for (Ingresso i : participante.getIngressos()) {
-				participante.removerIngresso(i);
+				if (LocalDate.parse(i.getEvento().getData(), formdata).isBefore(LocalDate.now()))
+				repositorio.remover(i);
 			}	
 		} 
 		
-		repositorio.remove(participante);
-		
+		if (participante.getIngressos().size() == 0) {
+			repositorio.remover(participante);
+			repositorio.salvarObjetos();
+		} else {
+			throw new Exception("Participante ainda possui ingressos validos.");
+		}
 	}
 	
 	// APAGAR INGRESSO
 	public static void apagarIngresso(String codigo) throws Exception {
 		
-		ArrayList<Participante> participantes = repositorio.getParticipantes();
-		ArrayList<Evento> eventos = repositorio.getEventos();
-		ArrayList<Ingresso> ingressos = repositorio.getIngressos();
-		Ingresso ingresso = null;
+		Ingresso ingresso = repositorio.localizarIngresso(codigo);
+	
 		
-		for (Ingresso i : ingressos) {
-			if (i.getCodigo() == codigo) {
-				ingresso = i;
-			}
-		}
+		repositorio.remover(ingresso);
+		repositorio.salvarObjetos();
 		
-		if (ingresso == null) {
-			throw new Exception("Codigo invalido.");
-		}
-		
-		for (Participante p : participantes) {
-			if (p.getCpf().equals(codigo.split("-")[1])) {
-				ingresso.setParticipante(null);;
-			}
-		}
-		
-		for (Evento e : eventos) {
-			if (e.getId() == Integer.parseInt(codigo.split("-")[0])) {
-				ingresso.setEvento(null);
-			}
-		}
-		
-		repositorio.remove(ingresso);
 	}
 	
 	public static ArrayList<Evento> listarEventos() {
@@ -186,21 +156,12 @@ public class Fachada {
 	
 	public static ArrayList<Participante> listarParticipantes() {
 		return repositorio.getParticipantes();
+			
 	}
 	
 	public static ArrayList<Ingresso> listarIngressos() {
 		return repositorio.getIngressos();
 	}
-	
-	// METODOS AUXILIARES
-	
-	public static void incrementoID() {
-		idint++;
-	}
-	
-	public static int getID() {
-		return idint;
-	}
-	
+		
 }
 	

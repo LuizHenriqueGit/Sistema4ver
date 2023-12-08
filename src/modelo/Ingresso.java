@@ -18,10 +18,19 @@ public class Ingresso {
 	public double calcularPreco() {
 	
 		if (participante.calcularIdade() < 18) {
+			if (participante instanceof Convidado) {
+				return evento.getPreco() * 0.4;
+			}
 			return evento.getPreco() * 0.9;
 		} else if (participante.calcularIdade() >= 60) {
+			if (participante instanceof Convidado) {
+				return evento.getPreco() * 0.3;
+			}
 			return evento.getPreco() * 0.8;
 		} else {
+			if (participante instanceof Convidado) {
+				return evento.getPreco() * 0.5;
+			}
 			return evento.getPreco();
 		}
 	}
@@ -58,7 +67,6 @@ public class Ingresso {
 	public void setParticipante(Participante participante) {
 		this.participante = participante;
 	}
-	
 	
 	@Override
 	public String toString() {

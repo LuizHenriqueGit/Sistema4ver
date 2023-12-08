@@ -19,10 +19,14 @@ public class Repositorio {
 		carregarObjetos();
 	}
 	
-	// PARTICIPANTE
+	// PARTICIPANTE E CONVIDADO
 	
 	public void adicionar(Participante participante) {
 		participantes.add(participante);
+	}
+	
+	public void adicionar(Convidado convidado) {
+		participantes.add(convidado);
 	}
 	
 	public void remover(Participante participante) {
@@ -166,16 +170,14 @@ public class Repositorio {
 	public void setIngressos(ArrayList<Ingresso> ingressos) {
 		this.ingressos = ingressos;
 	}
+	
+	public int gerarId() {
+		if (eventos.isEmpty())
+			return 1;
+		else {
+			Evento ultima = eventos.get(eventos.size()-1);
+			return ultima.getId() + 1;
+		}
+	}
 
-	public void remove(Ingresso ingresso) {
-		ingressos.remove(ingresso);
-	}
-	
-	public void remove(Evento evento) {
-		eventos.remove(evento);
-	}
-	
-	public void remove(Participante participante) {
-		participantes.remove(participante);
-	}
 }

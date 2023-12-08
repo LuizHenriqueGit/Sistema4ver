@@ -10,28 +10,6 @@ public class Evento {
 	private int capacidade;
 	private double preco;
 	private ArrayList<Ingresso> ingressos = new ArrayList<>();
-	
-	public Evento() {};
-	
-	public Evento(int id, String data, String descricao) {
-		this.id = id;
-		this.data = data;
-		this.descricao = descricao;	
-	}
-	
-	public Evento(int id, String data, String descricao, int capacidade) {
-		this.id = id;
-		this.data = data;
-		this.descricao = descricao;	
-		this.capacidade = capacidade;
-	}
-	
-	public Evento(int id, String data, String descricao, double preco) {
-		this.id = id;
-		this.data = data;
-		this.descricao = descricao;	
-		this.preco = preco;
-	}
 
 	public Evento(int id, String data, String descricao, int capacidade, double preco) {
 		this.id = id;
@@ -56,12 +34,6 @@ public class Evento {
 		return ingressos.size();
 	}
 
-	public double totalArrecadado() {
-
-		return ingressos.size() * preco;
-	}
-
-	
 	public void adicionarIngresso(Ingresso ingresso) {
 		ingressos.add(ingresso);
 	}
@@ -72,6 +44,16 @@ public class Evento {
 		ingresso.setEvento(null);
 	}
 	
+	public double totalArrecadado() {
+		double ttlarr = 0;
+		
+		for (Ingresso ingresso : ingressos) {
+			ttlarr += ingresso.calcularPreco();
+		}
+		
+		return ttlarr;
+		}
+		
 	
 	// Getters e Setters
 	

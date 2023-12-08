@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Participante {
 
@@ -63,8 +64,12 @@ public class Participante {
 
 	@Override
 	public String toString() {
-		return "Participante [cpf=" + cpf + ", nascimento=" + nascimento + ", ingressos=" + ingressos + "]";
+		return "Participante [cpf=" + cpf + ", nascimento=" + nascimento + ", ingressos=" + ingressos.toString() + "]";
 	}
+	
+	
+
+
 	
 	
 
