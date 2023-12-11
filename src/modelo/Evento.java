@@ -41,7 +41,6 @@ public class Evento {
 	
 	public void removerIngresso(Ingresso ingresso) {
 		ingressos.remove(ingresso);
-		ingresso.setEvento(null);
 	}
 	
 	public double totalArrecadado() {

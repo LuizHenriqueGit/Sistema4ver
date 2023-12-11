@@ -28,12 +28,10 @@ public class Participante {
 	
 	public void adicionarIngresso(Ingresso ingresso) {
 		ingressos.add(ingresso);
-		ingresso.setParticipante(this);
 	}
 	
 	public void removerIngresso(Ingresso ingresso) {
 		ingressos.remove(ingresso);
-		ingresso.setParticipante(null);
 	}
 	
 	// Getters e Setters

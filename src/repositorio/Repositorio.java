@@ -3,6 +3,8 @@ package repositorio;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Scanner;
 
 import modelo.Convidado;
 import modelo.Evento;
@@ -15,9 +17,7 @@ public class Repositorio {
 	private ArrayList<Evento> eventos = new ArrayList<>();
 	private ArrayList<Ingresso> ingressos = new ArrayList<>();
 	
-	public Repositorio() {
-		carregarObjetos();
-	}
+	public Repositorio() {}
 	
 	// PARTICIPANTE E CONVIDADO
 	
@@ -99,6 +99,90 @@ public class Repositorio {
 			throw new RuntimeException("criacao dos arquivos vazios:"+ex.getMessage());
 		}
 
+		String linha;	
+		String[] partes;	
+		Evento evento;
+		Participante participante;
+
+		try	{
+			String data, descricao, id, capacidade, preco ;
+			File f = new File( new File(".\\eventos.csv").getCanonicalPath() )  ;
+			Scanner arquivo1 = new Scanner(f);	 //  pasta do projeto
+			while(arquivo1.hasNextLine()) 	{
+				linha = arquivo1.nextLine().trim();		
+				partes = linha.split(";");	
+				//System.out.println(Arrays.toString(partes));
+				id = partes[0];
+				data = partes[1];
+				descricao = partes[2];
+				capacidade = partes[3];
+				preco = partes[4];
+				evento = new Evento(Integer.parseInt(id), data, descricao,
+						Integer.parseInt(capacidade), Double.parseDouble(preco));
+				this.adicionar(evento);
+			} 
+			arquivo1.close();
+		}
+		catch(Exception ex)		{
+			throw new RuntimeException("leitura arquivo de eventos:"+ex.getMessage());
+		}
+
+		try	{
+			String cpf, nascimento, empresa, listaId;
+			File f = new File( new File(".\\participantes.csv").getCanonicalPath())  ;
+			Scanner arquivo2 = new Scanner(f);	 //  pasta do projeto
+			while(arquivo2.hasNextLine()) 	{
+				linha = arquivo2.nextLine().trim();	
+				partes = linha.split(";");
+				//System.out.println(Arrays.toString(partes));
+				cpf = partes[0];
+				nascimento = partes[1];
+				if(partes.length==2) {
+					participante = new Participante(cpf,nascimento);
+					this.adicionar(participante);
+				}
+				else {
+					empresa = partes[2];
+					participante = new Convidado(cpf,nascimento,empresa);
+					this.adicionar(participante);
+				}
+
+			}
+			arquivo2.close();
+		}
+		catch(Exception ex)		{
+			throw new RuntimeException("leitura arquivo de participantes:"+ex.getMessage());
+		}
+		
+		try	{
+			String codigo, telefone,cpf;
+			int id;
+			Ingresso ingresso;
+			Evento evento1;
+			Participante participante1;
+			File f = new File( new File(".\\ingressos.csv").getCanonicalPath())  ;
+			Scanner arquivo3 = new Scanner(f);	 //  pasta do projeto
+			while(arquivo3.hasNextLine()) 	{
+				linha = arquivo3.nextLine().trim();	
+				partes = linha.split(";");
+				//System.out.println(Arrays.toString(partes));
+				codigo = partes[0];		//contem id e cpf
+				telefone = partes[1];
+				id = Integer.parseInt(codigo.split("-")[0]);
+				cpf = codigo.split("-")[1];
+				evento1 = this.localizarEvento(id);
+				participante1 = this.localizarParticipante(cpf);
+				
+				ingresso = new Ingresso(codigo,evento1, participante1, telefone);
+				evento1.adicionarIngresso(ingresso);
+				participante1.adicionarIngresso(ingresso);
+				this.adicionar(ingresso);
+			}
+			arquivo3.close();
+		}
+		catch(Exception ex)		{
+			throw new RuntimeException("leitura arquivo de participantes:"+ex.getMessage());
+		}
 	}
 	
 	
