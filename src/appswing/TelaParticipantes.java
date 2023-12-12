@@ -1,7 +1,6 @@
 package appswing;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,10 +22,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 
 import modelo.Convidado;
+import modelo.Evento;
+import modelo.Ingresso;
 import modelo.Participante;
 import regras_negocio.Fachada;
 
@@ -46,6 +45,8 @@ public class TelaParticipantes {
 	private JTextField textField;
 	private JButton button_4;
 	private JTextField textField_2;
+	private JTable table_1;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -86,12 +87,12 @@ public class TelaParticipantes {
 			}
 		});
 		frame.setTitle("Participantes");
-		frame.setBounds(250, 495, 575, 376);
+		frame.setBounds(250, 495, 632, 447);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(53, 11, 455, 172);
+		scrollPane.setBounds(53, 11, 510, 172);
 		frame.getContentPane().add(scrollPane);
 		
 				table = new JTable() {
@@ -106,7 +107,24 @@ public class TelaParticipantes {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						if (table.getSelectedRow() >= 0) 
-							label.setText("Selecionado="+ table.getValueAt( table.getSelectedRow(), 0));
+							label.setText("Participante selecionado (CPF) = "+ table.getValueAt( table.getSelectedRow(), 0));
+						
+						String cpf = (String) table.getValueAt(table.getSelectedRow(), 0);
+						Participante participante = Fachada.repositorio.localizarParticipante(cpf);
+						
+						DefaultTableModel model = new DefaultTableModel();
+						model.addColumn("Código");
+						model.addColumn("Telefone");
+						for(Ingresso p : participante.getIngressos()) {
+							model.addRow(new Object[]{  p.getCodigo(), p.getTelefone()});
+							}
+						
+						table_1.setModel(model);
+						
+						table_1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 		//desabilita
+						table_1.getColumnModel().getColumn(1).setMaxWidth(50);	
+						table_1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); //habilita
+							
 					}
 				});
 				table.setGridColor(Color.BLACK);
@@ -148,12 +166,12 @@ public class TelaParticipantes {
 				}
 			}
 		});
-		button_1.setBounds(380, 240, 160, 23);
+		button_1.setBounds(446, 240, 160, 23);
 		frame.getContentPane().add(button_1);
 
 		label = new JLabel("");
-		label.setForeground(Color.RED);
-		label.setBounds(139, 309, 389, 14);
+		label.setForeground(new Color(33, 150, 243));
+		label.setBounds(10, 385, 321, 14);
 		frame.getContentPane().add(label);
 
 		lblData = new JLabel("CPF:");
@@ -176,7 +194,7 @@ public class TelaParticipantes {
 
 		label_4 = new JLabel("Selecione uma linha");
 		label_4.setFont(new Font("Gadugi", Font.BOLD, 12));
-		label_4.setBounds(53, 183, 315, 14);
+		label_4.setBounds(10, 188, 315, 14);
 		frame.getContentPane().add(label_4);
 		
 		textField = new JTextField();
@@ -210,6 +228,7 @@ public class TelaParticipantes {
 					} else {
 						Fachada.criarParticipante(cpf, nascimento);
 					}
+					label.setForeground(new Color(76,175,80));
 					label.setText("Participante adicionado.");
 					textField.setText("");
 					textField_1.setText("");
@@ -217,6 +236,7 @@ public class TelaParticipantes {
 					listagem();
 				}
 				catch(Exception ex) {
+					label.setForeground(new Color(244,67,54));
 					label.setText(ex.getMessage());
 				}
 			}
@@ -232,8 +252,34 @@ public class TelaParticipantes {
 			}
 		});
 		button_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		button_4.setBounds(380, 211, 160, 23);
+		button_4.setBounds(446, 209, 160, 23);
 		frame.getContentPane().add(button_4);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(195, 213, 243, 172);
+		frame.getContentPane().add(scrollPane_2);
+		
+		table_1 = new JTable() {
+			public boolean isCellEditable(int rowIndex, int vColIndex) {
+				return false;
+			}
+		};
+		scrollPane_2.setViewportView(table_1);
+		table_1.setShowGrid(true);
+		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_1.setRowSelectionAllowed(true);
+		table_1.setRequestFocusEnabled(false);
+		table_1.setGridColor(Color.BLACK);
+		table_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		table_1.setFocusable(false);
+		table_1.setFillsViewportHeight(true);
+		table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		table_1.setBackground(Color.WHITE);
+		table_1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		
+		lblNewLabel = new JLabel("Listagem dos Ingressos");
+		lblNewLabel.setBounds(250, 194, 145, 14);
+		frame.getContentPane().add(lblNewLabel);
 		
 	}
 
@@ -262,6 +308,7 @@ public class TelaParticipantes {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); //habilita
 		}
 		catch(Exception erro){
+			label.setForeground(new Color(244,67,54));
 			label.setText(erro.getMessage());
 		}
 	}

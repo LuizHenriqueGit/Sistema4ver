@@ -21,9 +21,12 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import modelo.Evento;
+import modelo.Ingresso;
 import regras_negocio.Fachada;
 
 
@@ -44,6 +47,8 @@ public class TelaEventos {
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JLabel lblMedia_2;
+	private JTable table_1;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -84,12 +89,12 @@ public class TelaEventos {
 			}
 		});
 		frame.setTitle("Eventos");
-		frame.setBounds(250, 495, 564, 393);
+		frame.setBounds(250, 495, 609, 449);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(53, 11, 455, 172);
+		scrollPane.setBounds(30, 11, 528, 172);
 		frame.getContentPane().add(scrollPane);
 		
 				table = new JTable() {
@@ -102,7 +107,25 @@ public class TelaEventos {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						if (table.getSelectedRow() >= 0) 
-							label.setText("selecionado="+ table.getValueAt( table.getSelectedRow(), 0));
+							label.setText("Evento selecionado = "+ table.getValueAt( table.getSelectedRow(), 0));
+
+						int idevento = (int) table.getValueAt(table.getSelectedRow(), 0);
+						Evento evento = Fachada.repositorio.localizarEvento(idevento);
+						
+						DefaultTableModel model = new DefaultTableModel();
+						model.addColumn("Código");
+						model.addColumn("Telefone");
+						for(Ingresso p : evento.getIngressos()) {
+							model.addRow(new Object[]{  p.getCodigo(), p.getTelefone()});
+							}
+						
+						table_1.setModel(model);
+						
+						table_1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); 		//desabilita
+						table_1.getColumnModel().getColumn(1).setMaxWidth(50);	
+						table_1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); //habilita
+							
+							
 					}
 				});
 				table.setGridColor(Color.BLACK);
@@ -116,6 +139,14 @@ public class TelaEventos {
 				table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				table.setShowGrid(true);
 				table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				table.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (table.getSelectedRow() >= 0) 
+							label.setText("Evento selecionado = "+ table.getValueAt( table.getSelectedRow(), 0));
+	
+					}
+				});
 
 		button_1 = new JButton("Apagar Selecionado");
 		button_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -138,16 +169,17 @@ public class TelaEventos {
 						label.setText("selecione uma linha");
 				}
 				catch(Exception erro) {
+					label.setForeground(Color.RED);
 					label.setText(erro.getMessage());
 				}
 			}
 		});
-		button_1.setBounds(380, 240, 160, 23);
+		button_1.setBounds(448, 240, 139, 23);
 		frame.getContentPane().add(button_1);
 
 		label = new JLabel("");
-		label.setForeground(Color.RED);
-		label.setBounds(141, 329, 641, 14);
+		label.setForeground(new Color(33, 150, 243));
+		label.setBounds(10, 385, 321, 14);
 		frame.getContentPane().add(label);
 
 		lblData = new JLabel("Data:");
@@ -176,7 +208,7 @@ public class TelaEventos {
 
 		label_4 = new JLabel("Selecione uma linha");
 		label_4.setFont(new Font("Gadugi", Font.BOLD, 12));
-		label_4.setBounds(53, 183, 315, 14);
+		label_4.setBounds(10, 188, 313, 14);
 		frame.getContentPane().add(label_4);
 		
 		textField = new JTextField();
@@ -212,6 +244,7 @@ public class TelaEventos {
 					String capacidade = textField_2.getText();
 					String preco = textField_3.getText();
 					Fachada.criarEvento(data, descricao, Integer.parseInt(capacidade), Double.parseDouble(preco));
+					label.setForeground(new Color(76,175,80));
 					label.setText("Evento criado!");
 					textField.setText("");
 					textField_1.setText("");
@@ -220,12 +253,13 @@ public class TelaEventos {
 					listagem();
 				}
 				catch(Exception ex) {
+					label.setForeground(new Color(244,67,54));
 					label.setText(ex.getMessage());
 				}
 			}
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		button.setBounds(36, 329, 95, 23);
+		button.setBounds(47, 339, 95, 23);
 		frame.getContentPane().add(button);
 
 		/* 
@@ -262,11 +296,38 @@ public class TelaEventos {
 			}
 		});
 		button_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		button_4.setBounds(380, 211, 160, 23);
+		button_4.setBounds(448, 209, 139, 23);
 		frame.getContentPane().add(button_4);
 		
-	}
-
+				
+				JScrollPane scrollPane_2 = new JScrollPane();
+				scrollPane_2.setBounds(195, 213, 243, 172);
+				frame.getContentPane().add(scrollPane_2);
+				
+				table_1 = new JTable() {
+					public boolean isCellEditable(int rowIndex, int vColIndex) {
+						return false;
+					}
+				};
+				scrollPane_2.setViewportView(table_1);
+				table_1.setShowGrid(true);
+				table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				table_1.setRowSelectionAllowed(true);
+				table_1.setRequestFocusEnabled(false);
+				table_1.setGridColor(Color.BLACK);
+				table_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
+				table_1.setFocusable(false);
+				table_1.setFillsViewportHeight(true);
+				table_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+				table_1.setBackground(Color.WHITE);
+				table_1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				
+				lblNewLabel = new JLabel("Listagem dos Ingressos");
+				lblNewLabel.setBounds(250, 194, 145, 14);
+				frame.getContentPane().add(lblNewLabel);
+				
+}
+	
 	public void listagem () {
 		try{
 			List<Evento> lista = Fachada.listarEventos();
@@ -292,6 +353,7 @@ public class TelaEventos {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); //habilita
 		}
 		catch(Exception erro){
+			label.setForeground(new Color(244,67,54));
 			label.setText(erro.getMessage());
 		}
 	}

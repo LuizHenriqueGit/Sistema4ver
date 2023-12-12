@@ -79,7 +79,7 @@ public class TelaPrincipal {
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setText("Inicializando...");
 		label.setBounds(0, 0, 450, 249);
-		ImageIcon imagem = new ImageIcon(getClass().getResource("/imagens/TESTE.png"));
+		ImageIcon imagem = new ImageIcon(getClass().getResource("/imagens/background.png"));
 		imagem = new ImageIcon(imagem.getImage().getScaledInstance(label.getWidth(),label.getHeight(), Image.SCALE_DEFAULT));//		label.setIcon(fotos);
 		label.setIcon(imagem);
 		frame.getContentPane().add(label);

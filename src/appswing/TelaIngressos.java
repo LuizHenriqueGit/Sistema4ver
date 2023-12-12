@@ -82,7 +82,7 @@ public class TelaIngressos {
 			}
 		});
 		frame.setTitle("Ingressos");
-		frame.setBounds(250, 495, 568, 372);
+		frame.setBounds(250, 495, 597, 372);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -140,11 +140,11 @@ public class TelaIngressos {
 				}
 			}
 		});
-		button_1.setBounds(380, 240, 160, 23);
+		button_1.setBounds(411, 240, 160, 23);
 		frame.getContentPane().add(button_1);
 
 		label = new JLabel("");
-		label.setForeground(Color.RED);
+		label.setForeground(new Color(33, 150, 243));
 		label.setBounds(141, 302, 700, 14);
 		frame.getContentPane().add(label);
 
@@ -198,10 +198,15 @@ public class TelaIngressos {
 					String cpf = textField_1.getText();
 					String telefone = textField_2.getText();
 					Fachada.criarIngresso(Integer.parseInt(id), cpf, telefone);
+					label.setForeground(new Color(76,175,80));
 					label.setText("Ingresso criado para o evento de ID " + id + ".");
+					textField.setText("");
+					textField_1.setText("");
+					textField_2.setText("");
 					listagem();
 				}
 				catch(Exception ex) {
+					label.setForeground(new Color(244,67,54));
 					label.setText(ex.getMessage());
 				}
 			}
@@ -217,9 +222,9 @@ public class TelaIngressos {
 			}
 		});
 		button_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		button_4.setBounds(380, 211, 160, 23);
+		button_4.setBounds(411, 209, 160, 23);
 		frame.getContentPane().add(button_4);
-		
+			
 	}
 
 	public void listagem () {
@@ -246,6 +251,7 @@ public class TelaIngressos {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); //habilita
 		}
 		catch(Exception erro){
+			label.setForeground(new Color(244,67,54));
 			label.setText(erro.getMessage());
 		}
 	}

@@ -82,7 +82,7 @@ public class Fachada {
 		}
 
 		for (Ingresso i : repositorio.getIngressos()) {
-			if (i.getCodigo() == codigo) {
+			if (i.getCodigo().equals(codigo)) {
 				throw new Exception("Ingresso já criado pra o CPF digitado.");
 			}
 		}
