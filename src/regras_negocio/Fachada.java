@@ -1,3 +1,7 @@
+/*
+Alunos: Luiz Henrique e Lucas Pedro
+*/
+
 package regras_negocio;
 
 import java.time.LocalDate;
