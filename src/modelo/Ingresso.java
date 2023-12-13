@@ -74,8 +74,7 @@ public class Ingresso {
 	
 	@Override
 	public String toString() {
-		return "Ingresso [codigo=" + codigo + ", telefone=" + telefone + ", evento=" + evento + ", participante="
-				+ participante + "]";
+		return "Ingresso [codigo=" + codigo + ", telefone=" + telefone + "]";
 	}
 	
 	

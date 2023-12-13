@@ -110,8 +110,19 @@ public class Evento {
 
 	@Override
 	public String toString() {
+		
+		String resultado = "";
+		
+		for (Ingresso i : ingressos) {
+			if (resultado.length() == 0) {
+				resultado += "\nCodigo: " + i.getCodigo() + " - Telefone: " + i.getTelefone() + "\n";
+			} else {
+				resultado += "Codigo: " + i.getCodigo() + " - Telefone: " + i.getTelefone() + "\n";
+			}
+			
+		}
 		return "Evento [id=" + id + ", data=" + data + ", descricao=" + descricao + ", capacidade=" + capacidade
-				+ ", preco=" + preco + ", ingressos=" + ingressos + "]";
+				+ ", preco=" + preco + ", \ningressos:" + resultado + "]";
 	}
 	
 	

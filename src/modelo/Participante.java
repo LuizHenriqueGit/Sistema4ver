@@ -65,7 +65,18 @@ public class Participante {
 
 	@Override
 	public String toString() {
-		return "Participante [cpf=" + cpf + ", nascimento=" + nascimento + ", ingressos=" + ingressos.toString() + "]";
+		
+		String resultado = "";
+		
+		for (Ingresso i : ingressos) {
+			if (resultado.length() == 0) {
+				resultado += "\nCodigo: " + i.getCodigo() + " - Telefone: " + i.getTelefone() + "\n";
+			} else {
+				resultado += "Codigo: " + i.getCodigo() + " - Telefone: " + i.getTelefone() + "\n";
+			}
+			
+		}
+		return "Participante [cpf=" + cpf + ", nascimento=" + nascimento + ", \ningressos:" + resultado + "]";
 	}
 	
 	
