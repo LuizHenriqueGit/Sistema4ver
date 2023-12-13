@@ -1,3 +1,7 @@
+/*
+Alunos: Luiz Henrique e Lucas Pedro
+*/
+
 package appswing;
 
 import java.awt.Color;
